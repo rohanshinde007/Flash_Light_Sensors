@@ -1,0 +1,2 @@
+rootProject.name = "flash 007"
+include ':app'
