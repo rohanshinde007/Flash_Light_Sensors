@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     CameraManager camaraManager;
     String getCameraID;
     ImageView image, image2;
-    int a;
+
 
     private SensorManager mSensorManager;
     private float mAccel;
