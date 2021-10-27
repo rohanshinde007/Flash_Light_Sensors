@@ -51,7 +51,8 @@
         android:focusable="true"
         android:text="special thing about flash light app"
         android:textColor="@color/black"
-        app:backgroundTint="#FFFFFF" />
+        app:backgroundTint="#FFFFFF"
+       />
 
 </RelativeLayout>
 

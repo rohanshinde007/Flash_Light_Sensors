@@ -1,9 +1,12 @@
 package com.mul.flash007;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -26,7 +30,21 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.OnPaidEventListener;
+import com.google.android.gms.ads.ResponseInfo;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
 import java.util.Objects;
+
+import static android.content.ContentValues.TAG;
 
 //there
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -36,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     String getCameraID;
     ImageView image, image2;
 
-
+    private InterstitialAd mInterstitialAd;
     private SensorManager mSensorManager;
     private float mAccel;
     private float mAccelCurrent;
@@ -49,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().setTitle("Shaking Torch");
+
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
 
         toggle_button = findViewById(R.id.toggle_button);
         camaraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
@@ -80,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "press again", Toast.LENGTH_SHORT).show();
                 Vibrator m = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 // Vibrate for 500 milliseconds
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -88,14 +113,57 @@ public class MainActivity extends AppCompatActivity {
                     //deprecated in API 26
                     m.vibrate(70);
                 }
-                Intent intent = new Intent(MainActivity.this, ShakingSensors.class);
-                startActivity(intent);
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(MainActivity.this);
+                }
             }
         });
+        AdRequest adRequest = new AdRequest.Builder().build();
+//   ca-app-pub-3940256099942544/1033173712 test ad
+        //  ca-app-pub-9399051416600684/3197089612  real add
+        InterstitialAd.load(MainActivity.this, "ca-app-pub-9399051416600684/3197089612", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        Log.i(TAG, "onAdLoaded");
+
+                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                openSecond();
+                                Log.d("TAG", "The ad was dismissed.");
+                            }
+
+                            @Override
+                            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                mInterstitialAd.show(MainActivity.this);
+                                Log.d("TAG", "The ad failed to show.");
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                mInterstitialAd = null;
+                                Log.d("TAG", "The ad was shown.");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        mInterstitialAd.show(MainActivity.this);
+                        mInterstitialAd = null;
+                    }
+                });
+
     }
 
     private final SensorEventListener mSensorListener = new SensorEventListener() {
-
 
         @SuppressLint("SetTextI18n")
         @RequiresApi(api = Build.VERSION_CODES.M)
@@ -204,6 +272,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private void openSecond() {
+        Intent i = new Intent(MainActivity.this,ShakingSensors.class);
+        startActivity(i);
+    }
 }
 
 //---------->THANKS----------->
