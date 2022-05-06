@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     String getCameraID;
     ImageView image, image2;
 
+
     private InterstitialAd mInterstitialAd;
     private SensorManager mSensorManager;
     private float mAccel;
@@ -61,12 +64,26 @@ public class MainActivity extends AppCompatActivity {
     private float mAccelLast;
 
     // THIS IS FOR VERSION
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getSupportActionBar().setTitle("Shaking Torch");
+
+        Intent serviceIntent = new Intent(this, MyBagroundService.class);
+        startService(serviceIntent);
+
+
+       // Context context = getApplicationContext();
+//        Intent intent = new Intent(this,MyService.class);
+//        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+//            startForegroundService(intent);
+//        }else{
+//            startService(intent);
+//        }
+
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -107,9 +124,11 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "press again", Toast.LENGTH_SHORT).show();
                 Vibrator m = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 // Vibrate for 500 milliseconds
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    m.vibrate(VibrationEffect.createOneShot(70, VibrationEffect.DEFAULT_AMPLITUDE));
-                } else {
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        m.vibrate(VibrationEffect.createOneShot(70, VibrationEffect.DEFAULT_AMPLITUDE));
+                    }
+                 else {
                     //deprecated in API 26
                     m.vibrate(70);
                 }
