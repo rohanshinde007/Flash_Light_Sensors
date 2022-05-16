@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">flash 007</string>
+    <string name="app_name">Flash Torch</string>
     <string name="click_here_to_start_background_service">Click here to start background Service</string>
     <string name="aboutMotionSensors">
         motion sensors for torch light app
         *its by default on.
         *when you cheque the cheque box.
         *then it will be turn off.
-        *for starting the torch light you just shake mobile.
+        *for starting the torch light you just shake your mobile.
         *for closing the torch light just shakeIt again.</string>
-    <string name="motion_sensors_for_torch_light_app_its_by_default_on_when_you_cheque_the_cheque_box_then_it_will_be_turn_off_for_starting_the_torch_light_you_just_shake_mobile_for_closing_the_torch_light_just_shakeit_again">motion sensors for torch light app. its by default on. for starting the torch light you just shake mobile and for closing the torch light just shakeIt again.this is event is depend on your mobile  </string>
+    <string name="motion_sensors_for_torch_light_app_its_by_default_on_when_you_cheque_the_cheque_box_then_it_will_be_turn_off_for_starting_the_torch_light_you_just_shake_mobile_for_closing_the_torch_light_just_shakeit_again">motion sensors for torch light app. it is by-default on. for starting the torch light you just shake mobile and for closing the torch light just shakeIt again.this is event it is depends on your mobile  </string>
 
 </resources>

@@ -34,7 +34,6 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-9399051416600684~6453808349"/>
         <service android:name=".MyBagroundService"/>
-        <service android:name=".MyFrogundServices"/>
     </application>
 
 </manifest>

@@ -121,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "press again", Toast.LENGTH_SHORT).show();
                 Vibrator m = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 // Vibrate for 500 milliseconds
 
@@ -132,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     //deprecated in API 26
                     m.vibrate(70);
                 }
+
                 if (mInterstitialAd != null) {
                     mInterstitialAd.show(MainActivity.this);
                 }
@@ -140,45 +140,45 @@ public class MainActivity extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
 //   ca-app-pub-3940256099942544/1033173712 test ad
         //  ca-app-pub-9399051416600684/3197089612  real add
-        InterstitialAd.load(MainActivity.this, "ca-app-pub-9399051416600684/3197089612", adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        // The mInterstitialAd reference will be null until
-                        // an ad is loaded.
-                        mInterstitialAd = interstitialAd;
-                        Log.i(TAG, "onAdLoaded");
 
-                        mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                openSecond();
-                                Log.d("TAG", "The ad was dismissed.");
-                            }
+            InterstitialAd.load(MainActivity.this, "ca-app-pub-9399051416600684/3197089612", adRequest,
+                    new InterstitialAdLoadCallback() {
+                        @Override
+                        public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                            // The mInterstitialAd reference will be null until
+                            // an ad is loaded.
+                            mInterstitialAd = interstitialAd;
 
-                            @Override
-                            public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                mInterstitialAd.show(MainActivity.this);
-                                Log.d("TAG", "The ad failed to show.");
-                            }
+                            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    openSecond();
+                                }
 
-                            @Override
-                            public void onAdShowedFullScreenContent() {
-                                // Called when fullscreen content is shown.
-                                // Make sure to set your reference to null so you don't
-                                // show it a second time.
-                                mInterstitialAd = null;
-                                Log.d("TAG", "The ad was shown.");
-                            }
-                        });
-                    }
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(AdError adError) {
+//                                    mInterstitialAd.show(MainActivity.this);
+                                    openSecond();
+                                }
 
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        mInterstitialAd.show(MainActivity.this);
-                        mInterstitialAd = null;
-                    }
-                });
+                                @Override
+                                public void onAdShowedFullScreenContent() {
+                                    // Called when fullscreen content is shown.
+                                    // Make sure to set your reference to null so you don't
+                                    // show it a second time.
+                                    mInterstitialAd = null;
+                                }
+                            });
+
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+//                        mInterstitialAd.show(MainActivity.this);
+                            mInterstitialAd = null;
+                            openSecond();
+                        }
+                    });
 
     }
 
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             mAccelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
             float delta = mAccelCurrent - mAccelLast;
             mAccel = mAccel * 0.9f + delta;
-            if (mAccel > 20) {
+            if (mAccel > 16) {
 
                 try {
                     //this is for enable the torch
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
                 } catch (CameraAccessException e) {
                     e.printStackTrace();
                 }
-            } else if (mAccel > 14) {
+            } else if (mAccel > 9) {
 
                 try {
                     // of the torch
