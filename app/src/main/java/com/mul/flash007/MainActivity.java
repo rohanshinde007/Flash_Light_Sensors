@@ -76,13 +76,7 @@ public class MainActivity extends AppCompatActivity {
         startService(serviceIntent);
 
 
-       // Context context = getApplicationContext();
-//        Intent intent = new Intent(this,MyService.class);
-//        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-//            startForegroundService(intent);
-//        }else{
-//            startService(intent);
-//        }
+
 
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
@@ -132,8 +126,10 @@ public class MainActivity extends AppCompatActivity {
                     m.vibrate(70);
                 }
 
-                if (mInterstitialAd != null) {
+                if (mInterstitialAd!=null) {
                     mInterstitialAd.show(MainActivity.this);
+                }else{
+                    openSecond();
                 }
             }
         });
@@ -148,38 +144,14 @@ public class MainActivity extends AppCompatActivity {
                             // The mInterstitialAd reference will be null until
                             // an ad is loaded.
                             mInterstitialAd = interstitialAd;
-
                             mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                                 @Override
                                 public void onAdDismissedFullScreenContent() {
                                     openSecond();
                                 }
-
-                                @Override
-                                public void onAdFailedToShowFullScreenContent(AdError adError) {
-//                                    mInterstitialAd.show(MainActivity.this);
-                                    openSecond();
-                                }
-
-                                @Override
-                                public void onAdShowedFullScreenContent() {
-                                    // Called when fullscreen content is shown.
-                                    // Make sure to set your reference to null so you don't
-                                    // show it a second time.
-                                    mInterstitialAd = null;
-                                }
                             });
-
-                        }
-
-                        @Override
-                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-//                        mInterstitialAd.show(MainActivity.this);
-                            mInterstitialAd = null;
-                            openSecond();
                         }
                     });
-
     }
 
     private final SensorEventListener mSensorListener = new SensorEventListener() {
